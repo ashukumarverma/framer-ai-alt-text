@@ -98,22 +98,23 @@ export function App() {
   return (
     <main>
       <Header />
+      <div className="w-full flex flex-col pd-10">
+        <div className="flex flex-col gap-2">
+          <SelectionStats selectionCount={selection.length} />
 
-      <div>
-        <SelectionStats selectionCount={selection.length} />
-        
-        <ScanButton isScanning={isScanning} onScan={handleScanImages} />
+          <ScanButton isScanning={isScanning} onScan={handleScanImages} />
 
-        {foundImages.length === 0 && !isScanning && <EmptyState />}
+          {foundImages.length === 0 && !isScanning && <EmptyState />}
 
-        {foundImages.length > 0 && (
-          <ImageResults
-            images={foundImages}
-            onGenerateAll={handleGenerateAll}
-            onGenerateImage={handleGenerateImageAlt}
-            onSaveImage={handleSaveImage}
-          />
-        )}
+          {foundImages.length > 0 && (
+            <ImageResults
+              images={foundImages}
+              onGenerateAll={handleGenerateAll}
+              onGenerateImage={handleGenerateImageAlt}
+              onSaveImage={handleSaveImage}
+            />
+          )}
+        </div>
       </div>
     </main>
   );

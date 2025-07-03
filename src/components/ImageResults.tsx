@@ -20,7 +20,7 @@ export function ImageResults({
   onSaveImage,
 }: ImageResultsProps) {
   return (
-    <div>
+    <div className="flex flex-col gap-2 pd-10">
       <ResultsHeader imageCount={images.length} onGenerateAll={onGenerateAll} />
       {images.map((image) => (
         <ImageCard

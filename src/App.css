@@ -1,11 +1,69 @@
 @import "tailwindcss";
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 main {
     display: flex;
     flex-direction: column;
     align-items: start;
     width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
     gap: 10px;
     background-color: white;
     color: black;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.bg-primary {
+    background-color: #f0f4ff;
+}
+
+.width-full {
+    width: 100%;
+}
+
+.pd-10 {
+    padding: 10px;
+}
+
+.pdx-10 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.pd-4 {
+    padding: 4px;
+}
+
+.pdx-4 {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.pdy-4 {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.pd-8 {
+    padding: 8px;
+}
+
+.pdx-8 {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.pdy-8 {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
