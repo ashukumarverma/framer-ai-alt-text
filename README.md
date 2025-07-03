@@ -12,7 +12,28 @@ This plugin solves the accessibility problem by automatically generating descrip
 4. **Applies the alt text** directly to your image nodes in Framer
 5. **Allows manual editing** if you want to customize the descriptions
 
-## Features
+## 🎬 **Video Demonstration & Implementation**
+
+**Watch the complete walkthrough showing how the plugin works and technical implementation:**
+
+<div align="center">
+
+[![Watch Demo Video](https://img.shields.io/badge/🎥_WATCH_DEMO-Click_to_View_Video-FF0000?style=for-the-badge&labelColor=000000&color=FF0000)](https://drive.google.com/file/d/1gwupPeTX5OHtJyusO1hDG0D5hn5HyH2m/view?usp=sharing)
+
+**[🔗 Click here to watch the full demonstration video](https://drive.google.com/file/d/1gwupPeTX5OHtJyusO1hDG0D5hn5HyH2m/view?usp=sharing)**
+
+</div>
+
+> **📺 Video Content:**
+>
+> - ✅ **Live Plugin Demo** - See it working in Framer
+> - ✅ **Technical Deep Dive** - Code architecture and implementation
+> - ✅ **API Integration** - Azure Computer Vision setup and usage
+> - ✅ **Development Process** - Problem-solving approach and best practices
+
+---
+
+## 🚀 Features
 
 - **Auto Image Detection**: Automatically scans your Framer canvas for images
 - **AI-Generated Alt Text**: Uses Azure Computer Vision API to generate descriptive alt text
