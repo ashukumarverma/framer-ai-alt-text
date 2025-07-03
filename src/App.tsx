@@ -1,15 +1,11 @@
 import { framer, CanvasNode } from "framer-plugin";
 import { useState, useEffect } from "react";
 import "./App.css";
-
-import {
-  Scan,
-  Sparkles,
-  Image as ImageIcon,
-  Loader2,
-  Save,
-  Wand2,
-} from "lucide-react";
+import { Header } from "./components/Header";
+import { SelectionStats } from "./components/SelectionStats";
+import { ScanButton } from "./components/ScanButton";
+import { EmptyState } from "./components/EmptyState";
+import { ImageResults } from "./components/ImageResults";
 
 framer.showUI({
   position: "top right",
@@ -84,119 +80,39 @@ export function App() {
     }, 1500);
   };
 
+  const handleGenerateAll = () => {
+    console.log("Generate all alt text");
+    // Implement generate all functionality
+  };
+
+  const handleGenerateImageAlt = (id: string) => {
+    console.log("Generate alt text for image:", id);
+    // Implement individual image alt text generation
+  };
+
+  const handleSaveImage = (id: string) => {
+    console.log("Save alt text for image:", id);
+    // Implement save functionality
+  };
+
   return (
     <main>
-      {/* Header */}
+      <Header />
+
       <div>
-        <div>
-          <Sparkles />
-        </div>
-        <div>
-          <div>Image Alt Text Generator</div>
-        </div>
-      </div>
+        <SelectionStats selectionCount={selection.length} />
+        
+        <ScanButton isScanning={isScanning} onScan={handleScanImages} />
 
-      {/* Content */}
-      <div>
-        {/* Selection Stats */}
-        <div>
-          <div>
-            <div>
-              <div>
-                <ImageIcon />
-              </div>
-              <div>
-                <p>
-                  {selection.length} element
-                  {selection.length !== 1 ? "s" : ""} selected
-                </p>
-                <p>Select images to start</p>
-              </div>
-            </div>
-            <span>{selection.length > 0 ? "Ready" : "Select"}</span>
-          </div>
-        </div>
+        {foundImages.length === 0 && !isScanning && <EmptyState />}
 
-        {/* Scan Button */}
-        <button onClick={handleScanImages} disabled={isScanning}>
-          {isScanning ? (
-            <>
-              <Loader2 />
-              Scanning...
-            </>
-          ) : (
-            <>
-              <Scan />
-              Scan for Images
-            </>
-          )}
-        </button>
-
-        {/* Empty State */}
-        {foundImages.length === 0 && !isScanning && (
-          <div>
-            <div>
-              <ImageIcon />
-            </div>
-            <h3>No Images Found</h3>
-            <p>Select images on your canvas and scan to generate alt text</p>
-          </div>
-        )}
-
-        {/* Results */}
         {foundImages.length > 0 && (
-          <div>
-            {/* Results Header */}
-            <div>
-              <div>
-                <div>
-                  <div>
-                    <Sparkles />
-                  </div>
-                  <div>
-                    <h4>
-                      {foundImages.length} Image
-                      {foundImages.length !== 1 ? "s" : ""} Found
-                    </h4>
-                    <p>Ready for generation</p>
-                  </div>
-                </div>
-                <button>
-                  <Wand2 />
-                  All
-                </button>
-              </div>
-            </div>
-
-            {/* Image Cards */}
-            {foundImages.map((image) => (
-              <div key={image.id}>
-                <div>
-                  <div>
-                    <ImageIcon />
-                  </div>
-                  <h4>{image.name}</h4>
-                </div>
-                <div>
-                  <label>Alt Text Description</label>
-                  <textarea
-                    placeholder="AI will generate descriptive alt text..."
-                    defaultValue={image.alt}
-                  />
-                </div>
-                <div>
-                  <button>
-                    <Wand2 />
-                    Generate
-                  </button>
-                  <button>
-                    <Save />
-                    Save
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <ImageResults
+            images={foundImages}
+            onGenerateAll={handleGenerateAll}
+            onGenerateImage={handleGenerateImageAlt}
+            onSaveImage={handleSaveImage}
+          />
         )}
       </div>
     </main>
