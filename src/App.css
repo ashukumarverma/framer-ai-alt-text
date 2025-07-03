@@ -23,6 +23,10 @@ body {
     line-height: 1.5;
 }
 
+.black-text{
+    color: black;
+}
+
 .bg-primary {
     background-color: #f0f4ff;
 }

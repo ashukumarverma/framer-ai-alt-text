@@ -1,33 +1,36 @@
 import { ResultsHeader } from "./ResultsHeader";
 import { ImageCard } from "./ImageCard";
+import { ImageData } from "../types/index";
 
 interface ImageResultsProps {
-  images: Array<{
-    id: string;
-    name: string;
-    alt: string;
-    src: string;
-  }>;
+  images: ImageData[];
   onGenerateAll: () => void;
   onGenerateImage: (id: string) => void;
   onSaveImage: (id: string) => void;
+  onAltTextChange: (id: string, altText: string) => void;
+  isGeneratingAll: boolean;
 }
 
 export function ImageResults({
   images,
   onGenerateAll,
   onGenerateImage,
-  onSaveImage,
+  onAltTextChange,
+  isGeneratingAll,
 }: ImageResultsProps) {
   return (
     <div className="flex flex-col gap-2 pd-10">
-      <ResultsHeader imageCount={images.length} onGenerateAll={onGenerateAll} />
+      <ResultsHeader
+        imageCount={images.length}
+        onGenerateAll={onGenerateAll}
+        isGeneratingAll={isGeneratingAll}
+      />
       {images.map((image) => (
         <ImageCard
           key={image.id}
           image={image}
           onGenerate={onGenerateImage}
-          onSave={onSaveImage}
+          onAltTextChange={onAltTextChange}
         />
       ))}
     </div>

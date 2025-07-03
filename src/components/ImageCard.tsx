@@ -1,17 +1,21 @@
-import { ImageIcon, Wand2, Save } from "lucide-react";
+import { ImageIcon, Wand2, AlertCircle, Loader2 } from "lucide-react";
+import { ImageData } from "../types/index";
 
 interface ImageCardProps {
-  image: {
-    id: string;
-    name: string;
-    alt: string;
-    src: string;
-  };
+  image: ImageData;
   onGenerate: (id: string) => void;
-  onSave: (id: string) => void;
+  onAltTextChange: (id: string, altText: string) => void;
 }
 
-export function ImageCard({ image, onGenerate, onSave }: ImageCardProps) {
+export function ImageCard({
+  image,
+  onGenerate,
+  onAltTextChange,
+}: ImageCardProps) {
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onAltTextChange(image.id, e.target.value);
+  };
+
   return (
     <div className="w-full flex flex-col gap-2 pd-10 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
       <div className="w-full flex items-center gap-3">
@@ -23,32 +27,46 @@ export function ImageCard({ image, onGenerate, onSave }: ImageCardProps) {
         </h4>
       </div>
 
+      {/* Show error state if there's an error */}
+      {image.error && (
+        <div className="flex items-center gap-2 pd-4 bg-red-50 border border-red-200 rounded-md">
+          <AlertCircle className="w-4 h-4 text-red-600" />
+          <p className="text-xs text-red-800">{image.error}</p>
+        </div>
+      )}
+
       <div className="flex flex-col w-full gap-2">
-        <label className=" block text-xs font-medium text-gray-700 mb-2">
+        <label className="block text-xs font-medium text-black mb-2">
           Alt Text Description
         </label>
         <textarea
-          className="bg-primary width-full border border-gray-300 rounded-md text-sm placeholder-gray-400"
+          data-image-id={image.id}
+          className="bg-primary width-full border border-gray-300 black-text rounded-md text-sm placeholder-gray-400 pd-4"
           placeholder="AI will generate descriptive alt text..."
-          defaultValue={image.alt}
+          value={image.alt}
+          onChange={handleTextareaChange}
           rows={3}
+          disabled={image.isGenerating}
         />
       </div>
 
       <div className="flex flex-col gap-2">
         <button
           onClick={() => onGenerate(image.id)}
-          className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
+          disabled={image.isGenerating || !!image.error}
+          className="flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm rounded-md transition-colors"
         >
-          <Wand2 className="w-4 h-4" />
-          Generate
-        </button>
-        <button
-          onClick={() => onSave(image.id)}
-          className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-gray-50 text-blue-600 border border-blue-600 text-sm rounded-md transition-colors"
-        >
-          <Save className="w-4 h-4" />
-          Save
+          {image.isGenerating ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Wand2 className="w-4 h-4" />
+              Generate
+            </>
+          )}
         </button>
       </div>
     </div>
