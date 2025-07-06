@@ -1,4 +1,4 @@
-import { ImageIcon, Wand2, AlertCircle, Loader2 } from "lucide-react";
+import { Wand2, AlertCircle, Loader2 } from "lucide-react";
 import { ImageData } from "../types/index";
 
 interface ImageCardProps {
@@ -18,14 +18,12 @@ export function ImageCard({
 
   return (
     <div className="w-full flex flex-col gap-2 pd-10 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-      <div className="w-full flex items-center gap-3">
-        <div className="p-2 bg-blue-50 rounded-full">
-          <ImageIcon className="w-4 h-4 text-blue-600" />
-        </div>
-        <h4 className="text-sm font-medium text-gray-900 truncate">
-          {image.name}
-        </h4>
-      </div>
+      {/* thumbnail */}
+      <img
+        src={image.src}
+        alt={image.alt || "Image thumbnail"}
+        className="w-full aspect-video object-contain pd-4"
+      />
 
       {/* Show error state if there's an error */}
       {image.error && (
@@ -42,7 +40,7 @@ export function ImageCard({
         <textarea
           data-image-id={image.id}
           className="bg-primary width-full border border-gray-300 black-text rounded-md text-sm placeholder-gray-400 pd-4"
-          placeholder="AI will generate descriptive alt text..."
+          placeholder={image.alt || "AI will generate descriptive alt text..."}
           value={image.alt}
           onChange={handleTextareaChange}
           rows={3}

@@ -1,80 +1,38 @@
-import { CanvasNode } from "framer-plugin";
+import { CanvasNode, FrameNode } from "framer-plugin";
 import { ImageData } from "../types/index";
 
-/**
- * Checks if a node is an image node
- */
+/* Checks if a node is an image node */
 export function isImageNode(node: CanvasNode): boolean {
     const nodeType = (node as unknown as Record<string, unknown>).__class;
     console.log('Checking node type:', nodeType, 'for node:', node);
 
-    // Check for various image node types that Framer might use
-    const imageTypes = [
-        'ImageNode',
-        'Image',
-        'WebImageNode',
-        'BackgroundImageNode',
-        'ComponentNode', // Sometimes images are wrapped in components
-        'FrameNode' // Sometimes images are in frames
-    ];
+    // image is stored as a FrameNode in Framer
+    // we check if the node is a FrameNode and if not return false
+    if (nodeType !== 'FrameNode') {
+        return false;
+    }
 
-    const isImage = imageTypes.includes(nodeType as string);
+    // cast node to FrameNode to access its properties
+    // and check if it has image-related properties
+    const nodeProps = node as FrameNode;
 
-    // Also check if the node has image properties
-    const nodeProps = node as unknown as Record<string, unknown>;
-    const hasImageProps = !!(
-        nodeProps.image ||
-        nodeProps.src ||
-        nodeProps.backgroundImage ||
-        (nodeProps.fill as Record<string, unknown>)?.image ||
-        (nodeProps.background as Record<string, unknown>)?.image
+    // image are stored in the backgroundImage property
+    // we check if the node has a backgroundImage property
+    return !!(
+        nodeProps.backgroundImage
     );
-
-    console.log('Node classification:', {
-        type: nodeType,
-        isImageType: isImage,
-        hasImageProps: hasImageProps,
-        finalResult: isImage || hasImageProps
-    });
-
-    return isImage || hasImageProps;
 }
 
-/**
- * Extracts image data from a Framer node
- */
+/* Extracts image data from a Framer node */
 export function extractImageData(node: CanvasNode): string | null {
     try {
-        const imageNode = node as unknown as Record<string, unknown>;
+        const imageNode = node as FrameNode;
 
-        // Try to get the image source from various possible properties
-        const imageSrc = imageNode.image ||
-            imageNode.src ||
-            imageNode.backgroundImage ||
-            (imageNode.fill as Record<string, unknown>)?.image ||
-            (imageNode.background as Record<string, unknown>)?.image ||
-            null;
+        // Try to get the image source from the backgroundImage property
+        const imageSrc = imageNode.backgroundImage?.url;
 
-        if (imageSrc) {
-            // If it's already a data URL, return it
-            if (typeof imageSrc === 'string' && imageSrc.startsWith('data:')) {
-                return imageSrc;
-            }
-
-            // If it's a URL, return it
-            if (typeof imageSrc === 'string' && (imageSrc.startsWith('http://') || imageSrc.startsWith('https://'))) {
-                return imageSrc;
-            }
-
-            // If it's a Framer asset, try to get the URL
-            if (typeof imageSrc === 'object' && imageSrc && (imageSrc as Record<string, unknown>).url) {
-                return (imageSrc as Record<string, unknown>).url as string;
-            }
-
-            // Try to get the src property if it exists
-            if (typeof imageSrc === 'object' && imageSrc && (imageSrc as Record<string, unknown>).src) {
-                return (imageSrc as Record<string, unknown>).src as string;
-            }
+        if (typeof imageSrc === 'string') {
+            return imageSrc;
         }
 
         return null;
@@ -84,71 +42,26 @@ export function extractImageData(node: CanvasNode): string | null {
     }
 }
 
-/**
- * Gets the current alt text from a node
- */
+/* Gets the current alt text from a node */
 export function getNodeAltText(node: CanvasNode): string {
     try {
-        const imageNode = node as unknown as Record<string, unknown>;
-        return (imageNode.alt || imageNode.altText || imageNode.title || '') as string;
+        const imageNode = node as FrameNode;
+        const altText = imageNode.backgroundImage?.altText;
+        console.log('Getting alt text for node:', node, 'Alt text:', altText);
+        return altText || '';
+
     } catch {
         return '';
     }
 }
 
-/**
- * Sets alt text on a Framer node
- */
-export function setNodeAltText(node: CanvasNode, altText: string): boolean {
-    try {
-        const imageNode = node as unknown as Record<string, unknown>;
 
-        // Try different property names that might work
-        if ('alt' in imageNode) {
-            (imageNode as Record<string, unknown>).alt = altText;
-            return true;
-        }
-
-        if ('altText' in imageNode) {
-            (imageNode as Record<string, unknown>).altText = altText;
-            return true;
-        }
-
-        if ('title' in imageNode) {
-            (imageNode as Record<string, unknown>).title = altText;
-            return true;
-        }
-
-        // Try to set it on the node's properties
-        if (imageNode.setProperty && typeof imageNode.setProperty === 'function') {
-            (imageNode.setProperty as (key: string, value: string) => void)('alt', altText);
-            return true;
-        }
-
-        // Try to set it directly
-        try {
-            (imageNode as Record<string, unknown>).alt = altText;
-            return true;
-        } catch (e) {
-            console.warn('Could not set alt text on node:', node, e);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error setting alt text:', error);
-        return false;
-    }
-}
-
-/**
- * Filters selection to only include image nodes
- */
+/* Filters selection to only include image nodes */
 export function filterImageNodes(nodes: CanvasNode[]): CanvasNode[] {
     return nodes.filter(isImageNode);
 }
 
-/**
- * Converts a selection of nodes to ImageData objects
- */
+/* Converts a selection of nodes to ImageData objects */
 export function convertNodesToImageData(nodes: CanvasNode[]): ImageData[] {
     return nodes
         .filter(isImageNode)
@@ -169,9 +82,7 @@ export function convertNodesToImageData(nodes: CanvasNode[]): ImageData[] {
         });
 }
 
-/**
- * Gets the node name for display
- */
+/* Gets the node name for display */
 export function getNodeDisplayName(node: CanvasNode): string {
     try {
         const nodeAny = node as unknown as Record<string, unknown>;
@@ -181,9 +92,7 @@ export function getNodeDisplayName(node: CanvasNode): string {
     }
 }
 
-/**
- * Validates if an image source is accessible
- */
+/* Validates if an image source is accessible */
 export async function validateImageSource(src: string): Promise<boolean> {
     if (!src) return false;
 
@@ -206,9 +115,7 @@ export async function validateImageSource(src: string): Promise<boolean> {
     }
 }
 
-/**
- * Converts image URL to base64 data URL for API processing
- */
+/* * Converts image URL to base64 data URL for API processing */
 export async function convertImageToBase64(imageUrl: string): Promise<string> {
     try {
         if (imageUrl.startsWith('data:')) {

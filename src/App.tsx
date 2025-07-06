@@ -10,7 +10,6 @@ import { ImageData } from "./types/index";
 import {
   filterImageNodes,
   convertNodesToImageData,
-  setNodeAltText,
   validateImageSource,
 } from "./utils/framerHelpers";
 import {
@@ -266,50 +265,6 @@ export function App() {
     [foundImages, generateAltTextForImage]
   );
 
-  const handleSaveImage = useCallback(
-    (id: string) => {
-      const imageData = foundImages.find((img) => img.id === id);
-      if (!imageData) return;
-
-      try {
-        // Get the current alt text from the textarea
-        const textareaElement = document.querySelector(
-          `textarea[data-image-id="${id}"]`
-        ) as HTMLTextAreaElement;
-        const currentAltText = textareaElement
-          ? textareaElement.value
-          : imageData.alt;
-
-        // Update the Framer node with the alt text
-        const success = setNodeAltText(imageData.node, currentAltText);
-
-        if (success) {
-          // Update local state
-          setFoundImages((prev) =>
-            prev.map((img) =>
-              img.id === id ? { ...img, alt: currentAltText } : img
-            )
-          );
-
-          console.log(`Alt text saved for image ${id}: "${currentAltText}"`);
-
-          // Show success feedback
-          framer.notify(`Alt text saved for ${imageData.name}`, {
-            variant: "success",
-          });
-        } else {
-          throw new Error("Failed to update node alt text");
-        }
-      } catch (error) {
-        console.error(`Error saving alt text for image ${id}:`, error);
-        framer.notify(`Failed to save alt text for ${imageData?.name}`, {
-          variant: "error",
-        });
-      }
-    },
-    [foundImages]
-  );
-
   const handleAltTextChange = useCallback((id: string, newAltText: string) => {
     setFoundImages((prev) =>
       prev.map((img) => (img.id === id ? { ...img, alt: newAltText } : img))
@@ -341,7 +296,6 @@ export function App() {
               images={foundImages}
               onGenerateAll={handleGenerateAll}
               onGenerateImage={handleGenerateImageAlt}
-              onSaveImage={handleSaveImage}
               onAltTextChange={handleAltTextChange}
               isGeneratingAll={isGeneratingAll}
             />

@@ -6,7 +6,6 @@ interface ImageResultsProps {
   images: ImageData[];
   onGenerateAll: () => void;
   onGenerateImage: (id: string) => void;
-  onSaveImage: (id: string) => void;
   onAltTextChange: (id: string, altText: string) => void;
   isGeneratingAll: boolean;
 }
