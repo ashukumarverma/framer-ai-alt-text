@@ -47,7 +47,7 @@ export function getNodeAltText(node: CanvasNode): string {
     try {
         const imageNode = node as FrameNode;
         const altText = imageNode.backgroundImage?.altText;
-        console.log('Getting alt text for node:', node, 'Alt text:', altText);
+        // console.log('Getting alt text for node:', node, 'Alt text:', altText);
         return altText || '';
 
     } catch {
@@ -115,7 +115,7 @@ export async function validateImageSource(src: string): Promise<boolean> {
     }
 }
 
-/* * Converts image URL to base64 data URL for API processing */
+/* Converts image URL to base64 data URL for API processing */
 export async function convertImageToBase64(imageUrl: string): Promise<string> {
     try {
         if (imageUrl.startsWith('data:')) {

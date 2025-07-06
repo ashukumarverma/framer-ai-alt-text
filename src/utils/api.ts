@@ -93,9 +93,7 @@ export async function generateAltTextFallback(): Promise<string> {
     return fallbackTexts[randomIndex];
 }
 
-/**
- * Test function to validate API connectivity
- */
+/* Test function to validate API connectivity */
 export async function testApiConnection(): Promise<boolean> {
     if (!AZURE_ENDPOINT || !AZURE_API_KEY) {
         console.error('Azure credentials not configured');
@@ -105,7 +103,8 @@ export async function testApiConnection(): Promise<boolean> {
     try {
         console.log('Testing Azure API connection...');
         // Test with a simple, publicly accessible image URL
-        const testImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png';
+        const testImageUrl = 'https://picsum.photos/200';
+        
         await generateAltTextSimple(testImageUrl);
         console.log('Azure API connection test successful');
         return true;
@@ -115,9 +114,7 @@ export async function testApiConnection(): Promise<boolean> {
     }
 }
 
-/**
- * Enhanced error handling for API responses
- */
+/* Enhanced error handling for API responses */
 export function handleApiError(error: unknown): string {
     if (axios.isAxiosError(error)) {
         const status = error.response?.status;
@@ -140,16 +137,14 @@ export function handleApiError(error: unknown): string {
     return error instanceof Error ? error.message : 'Unknown error occurred';
 }
 
-/**
- * Simple URL-based image analysis (fallback method)
- */
+/* Simple URL-based image analysis (fallback method) */
 export async function generateAltTextSimple(imageUrl: string): Promise<string> {
     if (!AZURE_ENDPOINT || !AZURE_API_KEY) {
         throw new Error('Azure Computer Vision API credentials not configured');
     }
 
     try {
-        console.log('Using simple URL-based analysis for:', imageUrl);
+        // console.log('Using simple URL-based analysis for:', imageUrl);
 
         const baseEndpoint = AZURE_ENDPOINT.endsWith('/') ? AZURE_ENDPOINT : `${AZURE_ENDPOINT}/`;
         const endpoint = `${baseEndpoint}vision/v${API_VERSION}/analyze`;
@@ -183,9 +178,7 @@ export async function generateAltTextSimple(imageUrl: string): Promise<string> {
     }
 }
 
-/**
- * Generates alt text for base64 image data using Azure Computer Vision API
- */
+/* Generates alt text for base64 image data using Azure Computer Vision API */
 export async function generateAltTextWithBase64(base64Data: string): Promise<string> {
     if (!AZURE_ENDPOINT || !AZURE_API_KEY) {
         throw new Error('Azure Computer Vision API credentials not configured');
